@@ -225,8 +225,9 @@ def public_profile(request, username):  # learn how in bookmarks
         'followers': Follower.objects.filter(being_followed=obj).exclude(follower=obj),
         'followees': Follower.objects.filter(follower=obj).exclude(being_followed=obj),
         'followcheck': Follower.objects.filter(follower=request.user, being_followed=obj),
+        'title': 'Public-Profile',
     }
-    response = render(request, 'homepage/public_profile.html', context, {'title': 'Public-Profile'})
+    response = render(request, 'homepage/public_profile.html', context)
     return response
 
 
