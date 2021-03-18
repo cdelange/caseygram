@@ -12,7 +12,7 @@ configobj==5.0.6
 cryptography==2.9.2
 distro==1.5.0
 dj-database-url==0.5.0
-Django==2.2.13
+Django==2.2.18
 django-crispy-forms==1.7.2
 django-endless-pagination==2.0
 django-extensions==2.1.6
