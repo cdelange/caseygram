@@ -4,7 +4,7 @@ beautifulsoup4==4.9.0
 boto3==1.9.179
 botocore==1.12.179
 bs4==0.0.1
-certifi==2019.3.9
+certifi==2022.12.7
 cffi==1.14.0
 chardet==3.0.4
 ConfigArgParse==1.2.3
