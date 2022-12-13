@@ -105,27 +105,115 @@
         </div>
 
 
-        <div>
+    <div>
 
         {% for comment in p.comments.all reversed %}
+
         <div>
+            {% if comment.parent == null %}
             <a href="{% url 'public-profile' comment.author.username %}" id="author-link" id="author-link">
                 <b>  {{ comment.author }}</b>
             </a>
             {{ comment.content }}
             <small>{{ comment.date_created|naturaltime|upper }}</small>
-            {% if comment.author == user %}
+            
+                    {% if comment.author == user %}
 
-                <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-h post-buttons"></i>
-                </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{% url 'comment-update' comment.id %}">Update</a>
-                        <a class="dropdown-item" href="{% url 'comment-delete' comment.id %}">Delete</a>
-                    </div>
+                            <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h post-buttons"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url 'comment-update' comment.id %}">Update</a>
+                                <a class="dropdown-item" href="{% url 'comment-reply' comment.id %}">Reply</a>
+                                <a class="dropdown-item" href="{% url 'comment-delete' comment.id %}">Delete</a>
+                            </div>
+                    {% else %}
+                            <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-h post-buttons"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    
+                                    <a class="dropdown-item" href="{% url 'comment-reply' comment.id %}">Reply</a>
+                                    
+                                </div>
+
+                    {% endif %}
             {% endif %}
         </div>
+
+            {% for reply in comment.replies.all reversed %}
+
+            <div>
+                <a href="{% url 'public-profile' reply.author.username %}" id="author-link" id="author-link">
+                     {{ reply.author }} Replied to {{comment.author}}
+                </a>
+                {{ reply.content }}
+                <small>{{ reply.date_created|naturaltime|upper }}</small>
+                {% if reply.author == user %}
+                    <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h post-buttons"></i>
+                    </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{% url 'comment-update' reply.id %}">Update</a>
+                            <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                            <a class="dropdown-item" href="{% url 'comment-delete' reply.id %}">Delete</a>
+                        </div>
+                {% else %}
+                    <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h post-buttons"></i>
+                    </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            
+                            <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                            
+                        </div>    
+
+                {% endif %}
+            </div>
+            {% comment %} <div class="show">
+        
+                <a href="{% url 'public-profile' reply.author.username %}" id="author-link" id="author-link">
+                     {{ reply.author }}
+                {{ reply.content }}
+                <small>{{ reply.date_created|naturaltime|upper }}</small>
+
+
+                    {% if reply.author == user %} {% endcomment %}
+
+                    {% comment %} <div class="dropdown">
+                        <button class="btn btn-link" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h post-buttons"></i>
+                            </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="{% url 'comment-update' reply.id %}">Update</a>
+                            <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                            <a class="dropdown-item" href="{% url 'comment-delete' reply.id %}">Delete</a>
+                        </div>
+                      </div>
+                       {% endcomment %}
+
+                        {% comment %} <button class="btn btn-link" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h post-buttons"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                            <a class="dropdown-item" href="{% url 'comment-update' reply.id %}">Update</a>
+                            <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                            <a class="dropdown-item" href="{% url 'comment-delete' reply.id %}">Delete</a>
+                        </div> {% endcomment %}
+                    {% comment %} {% else %}
+                        <button class="btn btn-link" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h post-buttons"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                
+                                <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                                
+                            </div> {% endcomment %}
+
+                    {% comment %} {% endif %} {% endcomment %}
+                
+            {% endfor %}  
         {% endfor %}
+        
     </div>
-        </div>
 {% endblock content %}

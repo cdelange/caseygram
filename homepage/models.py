@@ -32,9 +32,10 @@ class Comment(models.Model):
     content = models.CharField(max_length=500, blank=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateTimeField(default=timezone.now)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self):
-        return self.content
+        return self.content             
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.post.pk})  # returns a string to the post detail that uses the pk of the comment instance. post. pk to link to the correct detail page ie. /post/

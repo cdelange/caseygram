@@ -144,18 +144,18 @@ ADMINS = [('Casey', 'casey.delange@gmail.com')]
 
 
 # DJANGO CASEYGRAM VARIABLES:
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-DEBUG = os.environ.get("DEBUG_VALUE", False)
+AWS_ACCESS_KEY_ID = 'xyz'
+AWS_SECRET_ACCESS_KEY = 'xyz'
+AWS_STORAGE_BUCKET_NAME = 'xyz'
+SECRET_KEY = 'xyz'
+DEBUG = os.environ.get("DEBUG_VALUE", True)
 
 # for s3
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 AWS_S3_REGION_NAME = 'us-east-2'
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # auto sets configs for postgres db on heroku
