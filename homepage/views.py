@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Post, PostImage, Comment, Like
+from homepage.models import Post, PostImage, Comment, Like
 from users.models import Profile, Follower
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from .forms import CommentForm, PostForm, ImageForm
+from homepage.forms import CommentForm, PostForm, ImageForm
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
