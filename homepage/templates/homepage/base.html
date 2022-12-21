@@ -221,6 +221,48 @@
     </script>
 
     <script type="text/javascript">
+        $('main').on('click', '.likecommentbutton', function(){
+            var catid;
+            catid = $(this).attr("data-catid");
+            $.ajax(
+            {
+                type:"GET",
+                url: "/likecomment/",
+                data:{
+                    comment_id: catid
+                },
+                success: function(data){
+    
+                if(data==0){
+                    $('.like' + catid).toggle();
+                    $('#like' + catid).toggleClass("far fas");
+                    $('#likecount' + catid).html('');
+                    console.log(data+'if');
+                }
+    
+                else if(data==1){
+                    if($('.like' + catid).is(":hidden"))
+                    {
+                        $('.like' + catid).toggle();
+                    }
+    
+                    $('#like' + catid).toggleClass("far fas");
+                    $('#likecount' + catid).html(data + ' like');
+                    console.log(data+'elseif');
+                }
+                else{
+    
+                    $('#like' + catid).toggleClass("far fas");
+                    $('#likecount' + catid).html(data + ' likes');
+                    console.log(data+'else');
+                    }
+                }
+    
+            })
+        });
+    </script>
+
+    <script type="text/javascript">
     $('.follow').click(function(){
         var id;
         id = $(this).attr("id");
