@@ -45,20 +45,6 @@ def likePost(request):
     else:
         return HttpResponse("Request method is not a GET")
 
-def likeComment(request):
-    if request.method == 'GET':
-        comment_id = request.GET['comment_id']
-        likedcomment = Comment.objects.get(pk=comment_id)  # getting the liked comment
-
-        if Like.objects.filter(comment=likedcomment, liker=request.user).exists():
-            Like.objects.filter(comment=likedcomment, liker=request.user).delete()
-        else:
-            m = Like(comment=likedcomment, liker=request.user)  # creating like object
-            m.save()  # saves into database
-        return HttpResponse(likedcomment.comment_likes.count())
-    else:
-        return HttpResponse("Request method is not a GET")
-
 
 def search(request):
     form = SearchForm()
@@ -200,14 +186,6 @@ class LikeListView(LoginRequiredMixin, ListView):
         # filter by var from captured url
         return qs.filter(post__pk=self.kwargs['pk'])
 
-class CommentLikeListView(LoginRequiredMixin, ListView):
-    model = Like
-
-    def get_queryset(self):
-        # org qs
-        qs = super().get_queryset()
-        # filter by var from captured url
-        return qs.filter(comment__pk=self.kwargs['pk'])
 
 def aboutUs(request):
     # displays http response for about us page

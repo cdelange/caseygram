@@ -28,7 +28,7 @@ class PostImage(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     content = models.CharField(max_length=500, blank=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateTimeField(default=timezone.now)
@@ -49,13 +49,12 @@ class Comment(models.Model):
 
 class Like(models.Model):
     liker = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes', null= True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
     date_created = models.DateTimeField(default=timezone.now)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes', null=True)
 
     def save(self, *args, **kwargs):
         super(Like, self).save(*args, **kwargs)
-        # notify.send(self.liker, recipient=self.post.author, verb='liked your post!', action_object=self.post, description='like', target=self)
+        notify.send(self.liker, recipient=self.post.author, verb='liked your post!', action_object=self.post, description='like', target=self)
 
 # this model is many to one (many images for one user) related to the Post model. the equilavalcy to match users is:
 # PostImage.objects.get(pk=1).post =  Post.objects.get(pk=4)
