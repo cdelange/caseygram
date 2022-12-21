@@ -25,7 +25,9 @@ urlpatterns = [
     path('profile/<str:username>/following/', views.
          FollowerListView.as_view(), name='following-list'),
     path('post/<int:pk>/likes/', views.LikeListView.as_view(), name='likes-list'),
+    path('post/<int:pk>/commentlikes/', views.CommentLikeListView.as_view(), name='comment-likes-list'),
     path('search/', views.SearchListView.as_view(), name="search-list"),
     path('likepost/', views.likePost, name='likepost'),
+    path('likecomment/', views.likeComment, name='likecomment'),
     path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
 ]
