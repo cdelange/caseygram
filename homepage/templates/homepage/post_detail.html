@@ -113,7 +113,7 @@
         <div>
             {% if comment.parent == null %}
             <a href="{% url 'public-profile' comment.author.username %}" id="author-link" id="author-link">
-                <b>  {{ comment.author }}</b>
+                <b>  {{ comment.author }} : </b>
             </a>
             {{ comment.content }}
             <small>{{ comment.date_created|naturaltime|upper }}</small>
@@ -176,9 +176,9 @@
             {% for reply in comment.replies.all reversed %}
 
             <div>
-                <a href="{% url 'public-profile' reply.author.username %}" id="author-link" id="author-link">
-                     {{ reply.author }} Replied to {{comment.author}}
-                </a>
+                <small a href="{% url 'public-profile' reply.author.username %}" id="author-link" id="author-link">
+                     {{ reply.author }} Replied to {{comment.author}} : 
+                </small a>
                 {{ reply.content }}
                 <small>{{ reply.date_created|naturaltime|upper }}</small>
                 {% if reply.author == user %}
