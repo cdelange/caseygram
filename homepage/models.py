@@ -15,7 +15,6 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)  # foreign key calls on an outside model whether imported or in this file, CASCADE will delete the post if
     # the User is deleted but wont delete the user if the post if deleted
     # likes?
-    # comments?
     # picture = models.
 
     def __str__(self):
@@ -55,7 +54,13 @@ class Like(models.Model):
 
     def save(self, *args, **kwargs):
         super(Like, self).save(*args, **kwargs)
-        # notify.send(self.liker, recipient=self.post.author, verb='liked your post!', action_object=self.post, description='like', target=self)
-
+        if self.post:
+            notify.send(self.liker, recipient=self.post.author, verb='liked your post!', action_object=self.post, description='like', target=self)
+        elif self.comment:
+            notify.send(self.liker, recipient=self.comment.author, verb='liked your comment!', action_object=self.comment, description='like', target=self)
+    
+    def __str__(self):
+        return f'{self.liker} {self.comment}' 
+            
 # this model is many to one (many images for one user) related to the Post model. the equilavalcy to match users is:
 # PostImage.objects.get(pk=1).post =  Post.objects.get(pk=4)

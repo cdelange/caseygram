@@ -284,11 +284,11 @@ class SearchListView(ListView):
         return object_list
 
 
-class LikeListView(LoginRequiredMixin, ListView):
-    model = Like
+# class LikeListView(LoginRequiredMixin, ListView):
+#     model = Like
 
-    def get_queryset(self):
-        # org qs
-        qs = super().get_queryset()
-        # filter by var from captured url
-        return qs.filter(post__pk=self.kwargs['pk'])
+#     def get_queryset(self):
+#         # org qs
+#         qs = super().get_queryset()
+#         # filter by var from captured url
+#         return qs.filter(post__pk=self.kwargs['pk'])

@@ -49,7 +49,7 @@ def create_objects(sender, instance, created, **kwargs):
         Comment.objects.create(post=post, author=caseygramMainUser, content='Here is your first comment!')
 
 
-@receiver(pre_delete, sender=Like)
+# @receiver(pre_delete, sender=Like)
 @receiver(pre_delete, sender=Comment)
 @receiver(pre_delete, sender=Message)
 @receiver(pre_delete, sender=Follower)
