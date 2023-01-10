@@ -108,15 +108,15 @@
 
     <div>
 
-        {% for comment in p.comments.all reversed %}
+        {% for comment in p.comments.all  %}
 
         <div>
-            {% if comment.parent == null %}
-            <a href="{% url 'public-profile' comment.author.username %}" id="author-link" id="author-link">
-                <b>  {{ comment.author }} : </b>
-            </a>
-            {{ comment.content }}
-            <small>{{ comment.date_created|naturaltime|upper }}</small>
+            {% if comment.parent == null %} {{comment.id}}
+                <a href="{% url 'public-profile' comment.author.username %}" id="author-link" id="author-link">
+                    <b>  {{ comment.author }} : </b>
+                </a>
+                {{ comment.content }}
+                <small>{{ comment.date_created|naturaltime|upper }}</small>
             
                     {% if comment.author == user %}
 
@@ -132,20 +132,20 @@
                     {% else %}
                         {% for i in comment.comment_likes.all %}
                     
-                        {% if user == i.liker %}
-                            <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn fa-heart fa-lg post-buttons fas"></i></a>
-                                    
-                        {% elif forloop.last %}
-                                                                
-                                            
-                            <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
-                        {% endif %}
+                            {% if user == i.liker %}
+                                <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn fa-heart fa-lg post-buttons fas"></i></a>
+                                        
+                            {% elif forloop.last %}
+                                                                    
+                                                
+                                <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
+                            {% endif %}
                 
 
-                    {% empty %}
-                        <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
+                        {% empty %}
+                            <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
 
-                    {% endfor %}
+                        {% endfor %}
                     <a href="{% url 'comment-likes-list' comment.id %}" id="author-link">
                         
                             <small id='likecount{{comment.id}}'>
@@ -157,7 +157,6 @@
                             {% else %}
                             {% endif %}
                             </small>
-                        
                     </a>
                     <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-ellipsis-h post-buttons"></i>
@@ -171,39 +170,138 @@
 
                     {% endif %}
             {% endif %}
+            
         </div>
-
-            {% for reply in comment.replies.all reversed %}
-
-            <div>
-                <small a href="{% url 'public-profile' reply.author.username %}" id="author-link" id="author-link">
-                     {{ reply.author }} Replied to {{comment.author}} : 
-                </small a>
-                {{ reply.content }}
-                <small>{{ reply.date_created|naturaltime|upper }}</small>
-                {% if reply.author == user %}
-                    <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-h post-buttons"></i>
-                    </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{% url 'comment-update' reply.id %}">Update</a>
-                            <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
-                            <a class="dropdown-item" href="{% url 'comment-delete' reply.id %}">Delete</a>
-                        </div>
-                {% else %}
-                    <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-h post-buttons"></i>
-                    </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              
+                {% for reply in comment.replies.all %}
+    
+                    <div>
+                        {{comment.id}} {{reply.parent.id}} {{reply.id}}
+                        {% if reply.parent.id == comment.id %} 
+                            <small>
+                            <a href="{% url 'public-profile' reply.author.username %}" id="author-link" id="author-link">
+                                &nbsp; &#8594; <b>{{ reply.author }}</b> Replied to {{comment.author}}'s comment "{{comment.content}}" : 
+                            </a></small>
+                            {{ reply.content }}
+                            <small>{{ reply.date_created|naturaltime|upper }}</small>
+                            {% if reply.author == user %}
+                                <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h post-buttons"></i>
+                                </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="{% url 'comment-update' reply.id %}">Update</a>
+                                        <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                                        <a class="dropdown-item" href="{% url 'comment-delete' reply.id %}">Delete</a>
+                                    </div>
+                            {% else %}
+                                    {% for i in comment.comment_likes.all %}
                             
-                            <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
-                            
-                        </div>    
+                                        {% if user == i.liker %}
+                                            <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn fa-heart fa-lg post-buttons fas"></i></a>
+                                                    
+                                        {% elif forloop.last %}
+                                                                                
+                                                            
+                                            <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
+                                        {% endif %}
+                        
 
-                {% endif %}
-            </div>
-                
-            {% endfor %}  
+                                    {% empty %}
+                                        <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
+
+                                    {% endfor %}
+                                            <a href="{% url 'comment-likes-list' comment.id %}" id="author-link">
+                                
+                                        <small id='likecount{{comment.id}}'>
+                        
+                                        {% if comment.comment_likes.count == 1 %}
+                                            {{comment.comment_likes.count}} like
+                                        {% elif comment.comment_likes.count > 1 %}
+                                            {{comment.comment_likes.count}} likes
+                                        {% else %}
+                                        {% endif %}
+                                        </small>
+                                        </a>
+                                <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h post-buttons"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                
+                                                
+                                    <a class="dropdown-item" href="{% url 'comment-reply' reply.id %}">Reply</a>
+                                                
+                                </div>
+
+                            {% endif %}
+                    
+                        {% endif %}
+                    </div>
+                            {% comment %} {% for reply2 in reply.replies.all %}
+                                <div>
+                                    {{reply.id}} {{reply2.parent.id}} {{reply2.id}}  
+                                    <small>
+                                    <a href="{% url 'public-profile' reply2.author.username %}" id="author-link" id="author-link">
+                                        &nbsp; &nbsp; &#8594; &#8594; <b>{{ reply2.author }}</b> Replied to {{reply.author}} : 
+                                    </a></small>
+                                    {{ reply2.content }}
+                                    <small>{{ reply2.date_created|naturaltime|upper }}</small>
+                                    {% if reply2.author == user %}
+                                        <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h post-buttons"></i>
+                                        </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="{% url 'comment-update' reply2.id %}">Update</a>
+                                                <a class="dropdown-item" href="{% url 'comment-reply' reply2.id %}">Reply</a>
+                                                <a class="dropdown-item" href="{% url 'comment-delete' reply2.id %}">Delete</a>
+                                            </div>
+                                    {% else %}
+                                            {% for i in comment.comment_likes.all %}
+                                    
+                                                {% if user == i.liker %}
+                                                    <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn fa-heart fa-lg post-buttons fas"></i></a>
+                                                            
+                                                {% elif forloop.last %}
+                                                                                        
+                                                                    
+                                                    <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
+                                                {% endif %}
+                                
+
+                                            {% empty %}
+                                                <a class='likecommentbutton' data-catid="{{ comment.id }}"><i id='like{{ comment.id }}' class="btn far fa-heart fa-lg post-buttons "></i></a>
+
+                                            {% endfor %}
+                                                <a href="{% url 'comment-likes-list' comment.id %}" id="author-link">
+                                        
+                                                <small id='likecount{{comment.id}}'>
+                                
+                                                {% if comment.comment_likes.count == 1 %}
+                                                    {{comment.comment_likes.count}} like
+                                                {% elif comment.comment_likes.count > 1 %}
+                                                    {{comment.comment_likes.count}} likes
+                                                {% else %}
+                                                {% endif %}
+                                                </small>
+                                                </a>
+                                        <button class="btn btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-h post-buttons"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        
+                                                        
+                                            <a class="dropdown-item" href="{% url 'comment-reply' reply2.id %}">Reply</a>
+                                                        
+                                        </div>
+
+                                    {% endif %}
+                            
+                        
+                                </div>
+                            {% endfor %} {% endcomment %}
+                {% endfor %}   
+                      
+                    
+                 
         {% endfor %}
         
     </div>

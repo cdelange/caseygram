@@ -26,7 +26,8 @@ class PostListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['now'] = datetime.now()
-        context['followers'] = Follower.objects.filter(follower__username=self.request.user)
+        context['followers'] = Follower.objects.filter(
+            follower__username=self.request.user)
         context['likesbyuser'] = Like.objects.filter(liker=self.request.user)
         return context
 
@@ -39,21 +40,26 @@ def likePost(request):
         if Like.objects.filter(post=likedpost, liker=request.user).exists():
             Like.objects.filter(post=likedpost, liker=request.user).delete()
         else:
-            m = Like(post=likedpost, liker=request.user)  # creating like object
+            # creating like object
+            m = Like(post=likedpost, liker=request.user)
             m.save()  # saves into database
         return HttpResponse(likedpost.likes.count())
     else:
         return HttpResponse("Request method is not a GET")
 
+
 def likeComment(request):
     if request.method == 'GET':
         comment_id = request.GET['comment_id']
-        likedcomment = Comment.objects.get(pk=comment_id)  # getting the liked comment
+        likedcomment = Comment.objects.get(
+            pk=comment_id)  # getting the liked comment
 
         if Like.objects.filter(comment=likedcomment, liker=request.user).exists():
-            Like.objects.filter(comment=likedcomment, liker=request.user).delete()
+            Like.objects.filter(comment=likedcomment,
+                                liker=request.user).delete()
         else:
-            m = Like(comment=likedcomment, liker=request.user)  # creating like object
+            # creating like object
+            m = Like(comment=likedcomment, liker=request.user)
             m.save()  # saves into database
         return HttpResponse(likedcomment.comment_likes.count())
     else:
@@ -70,13 +76,29 @@ class PostDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'p'
 
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     p= Post.objects.get(pk=self.kwargs['pk'])
+    #     c= p.comments
+    #     pc= c
+    #     r= pc.replies.all()
+    #     context['comments'] = pc
+    #     context['reply'] = r
+    #     return context
+    
+
+        
+    
+
 @login_required
 def post(request):
-    ImageFormSet = modelformset_factory(PostImage, fields=('modelimage',), labels={'modelimage': 'Image'}, extra=3, min_num=1)
+    ImageFormSet = modelformset_factory(PostImage, fields=('modelimage',), labels={
+                                        'modelimage': 'Image'}, extra=3, min_num=1)
     if request.method == 'POST':
 
         postForm = PostForm(request.POST)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=PostImage.objects.none())
+        formset = ImageFormSet(request.POST, request.FILES,
+                               queryset=PostImage.objects.none())
 
         if postForm.is_valid() and formset.is_valid():
             post_form = postForm.save(commit=False)
@@ -91,7 +113,8 @@ def post(request):
             messages.success(request, "Post Created!")
             return redirect('post-detail', pk=post_form.pk)
         else:
-            messages.info(request, 'Please attach atleast one photo starting with the first photo box')
+            messages.info(
+                request, 'Please attach atleast one photo starting with the first photo box')
 
     else:
         postForm = PostForm()
@@ -136,9 +159,10 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])  # ['pk'] is the pk assigned by to the comment button in the home.html. we are making the instance of the form assign the post field of the comment model to the Post object whos pk=self.kwargs['pk'] which is the storage location of url parameters
+        # ['pk'] is the pk assigned by to the comment button in the home.html. we are making the instance of the form assign the post field of the comment model to the Post object whos pk=self.kwargs['pk'] which is the storage location of url parameters
+        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
-    
+
 
 class ReplyCreateView(LoginRequiredMixin, CreateView):
     model = Comment
@@ -150,10 +174,7 @@ class ReplyCreateView(LoginRequiredMixin, CreateView):
         form.instance.parent = comment
         form.instance.post = comment.post
         return super().form_valid(form)
-    
-        
 
-    
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
@@ -200,6 +221,7 @@ class LikeListView(LoginRequiredMixin, ListView):
         # filter by var from captured url
         return qs.filter(post__pk=self.kwargs['pk'])
 
+
 class CommentLikeListView(LoginRequiredMixin, ListView):
     model = Like
 
@@ -208,6 +230,7 @@ class CommentLikeListView(LoginRequiredMixin, ListView):
         qs = super().get_queryset()
         # filter by var from captured url
         return qs.filter(comment__pk=self.kwargs['pk'])
+
 
 def aboutUs(request):
     # displays http response for about us page
@@ -240,12 +263,15 @@ class ExploreListView(LoginRequiredMixin, ListView):
         followed_users = []
         for i in followed_qs:
             followed_users.append(i.being_followed.username)
-        context['followers'] = Follower.objects.filter(follower__username=self.request.user)
+        context['followers'] = Follower.objects.filter(
+            follower__username=self.request.user)
 
-        context['profiles'] = Profile.objects.exclude(user=self.request.user).exclude(user__username__in=followed_users).order_by('-user__date_joined')[:4]
+        context['profiles'] = Profile.objects.exclude(user=self.request.user).exclude(
+            user__username__in=followed_users).order_by('-user__date_joined')[:4]
 
         followlist = []
-        qs = Follower.objects.exclude(being_followed=self.request.user).filter(follower=self.request.user)
+        qs = Follower.objects.exclude(being_followed=self.request.user).filter(
+            follower=self.request.user)
         for i in qs:
             followlist.append(i.being_followed.username)
         context['followlist'] = followlist
@@ -255,15 +281,18 @@ class ExploreListView(LoginRequiredMixin, ListView):
 
 @login_required
 def public_profile(request, username):  # learn how in bookmarks
-    obj = User.objects.get(username=username)  # grabs <username> from url and stores it in obj to  be passed into the context
+    # grabs <username> from url and stores it in obj to  be passed into the context
+    obj = User.objects.get(username=username)
     context = {
         'posts': Post.objects.filter(author__username=obj).order_by('-date_posted'),
-        'username': obj,  # obj is now accesible in the html via the variable {{ username }}
+        # obj is now accesible in the html via the variable {{ username }}
+        'username': obj,
         'followers': Follower.objects.filter(being_followed=obj).exclude(follower=obj),
         'followees': Follower.objects.filter(follower=obj).exclude(being_followed=obj),
         'followcheck': Follower.objects.filter(follower=request.user, being_followed=obj),
     }
-    response = render(request, 'homepage/public_profile.html', context, {'title': 'Public-Profile'})
+    response = render(request, 'homepage/public_profile.html',
+                      context, {'title': 'Public-Profile'})
     return response
 
 
@@ -282,13 +311,3 @@ class SearchListView(ListView):
         query = self.request.GET.get('q')
         object_list = User.objects.filter(username__icontains=query)
         return object_list
-
-
-# class LikeListView(LoginRequiredMixin, ListView):
-#     model = Like
-
-#     def get_queryset(self):
-#         # org qs
-#         qs = super().get_queryset()
-#         # filter by var from captured url
-#         return qs.filter(post__pk=self.kwargs['pk'])
