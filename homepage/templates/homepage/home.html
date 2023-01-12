@@ -25,7 +25,7 @@
                     {% else %}
                         <li data-target="#carousel-{{p.id}}" data-slide-to="{{ forloop.counter0 }}"></li>
                     {% endif %}
-                {% endfor %}
+                {% endfor %}       
             </ol>
             <div class="carousel-inner">
                 {% for image in p.images.all %}

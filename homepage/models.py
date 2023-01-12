@@ -5,6 +5,7 @@ from django.urls import reverse
 from PIL import Image
 from notifications.signals import notify
 from django.utils.text import Truncator
+from mptt.models import MPTTModel, TreeForeignKey
 
 # models from my understanding are the location of all the info about your data. you use it to make databases
 
@@ -26,15 +27,15 @@ class PostImage(models.Model):
     modelimage = models.ImageField(upload_to='post_images')
 
 
-class Comment(models.Model):
+class Comment(MPTTModel):
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE, null=True)
     content = models.CharField(max_length=500, blank=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateTimeField(default=timezone.now)
-    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE, related_name='replies')
+    parent =  TreeForeignKey('self', null=True, on_delete=models.CASCADE, related_name='replies')
 
     def __str__(self):
-        return self.content             
+        return f'{self.content} by {self.author}'             
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.post.pk})  # returns a string to the post detail that uses the pk of the comment instance. post. pk to link to the correct detail page ie. /post/

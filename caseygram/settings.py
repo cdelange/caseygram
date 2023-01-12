@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'notifications',
     'storages',
+    'mptt',
 ]
 
 MIDDLEWARE = [
