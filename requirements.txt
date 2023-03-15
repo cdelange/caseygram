@@ -2,10 +2,10 @@ acme==1.4.0
 asgiref==3.2.7
 beautifulsoup4==4.9.0
 boto3==1.9.179
-botocore==1.12.179
+botocore
 bs4==0.0.1
 certifi==2019.3.9
-cffi==1.14.0
+cffi
 chardet==3.0.4
 ConfigArgParse==1.2.3
 configobj==5.0.6
@@ -46,5 +46,5 @@ s3transfer==0.2.1
 six==1.12.0
 soupsieve==2.0
 sqlparse==0.3.1
-urllib3==1.26.5
+urllib3
 whitenoise==4.1.3

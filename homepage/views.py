@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Post, PostImage, Comment, Like
+from homepage.models import Post, PostImage, Comment, Like
 from users.models import Profile, Follower
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from .forms import CommentForm, PostForm, ImageForm
+from homepage.forms import CommentForm, PostForm, ImageForm
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -42,6 +42,20 @@ def likePost(request):
             m = Like(post=likedpost, liker=request.user)  # creating like object
             m.save()  # saves into database
         return HttpResponse(likedpost.likes.count())
+    else:
+        return HttpResponse("Request method is not a GET")
+
+def likeComment(request):
+    if request.method == 'GET':
+        comment_id = request.GET['comment_id']
+        likedcomment = Comment.objects.get(pk=comment_id)  # getting the liked comment
+
+        if Like.objects.filter(comment=likedcomment, liker=request.user).exists():
+            Like.objects.filter(comment=likedcomment, liker=request.user).delete()
+        else:
+            m = Like(comment=likedcomment, liker=request.user)  # creating like object
+            m.save()  # saves into database
+        return HttpResponse(likedcomment.comment_likes.count())
     else:
         return HttpResponse("Request method is not a GET")
 
@@ -124,7 +138,22 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         form.instance.author = self.request.user
         form.instance.post = Post.objects.get(pk=self.kwargs['pk'])  # ['pk'] is the pk assigned by to the comment button in the home.html. we are making the instance of the form assign the post field of the comment model to the Post object whos pk=self.kwargs['pk'] which is the storage location of url parameters
         return super().form_valid(form)
+    
 
+class ReplyCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        comment = Comment.objects.get(pk=self.kwargs['pk'])
+        form.instance.parent = comment
+        form.instance.post = comment.post
+        return super().form_valid(form)
+    
+        
+
+    
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
@@ -171,6 +200,14 @@ class LikeListView(LoginRequiredMixin, ListView):
         # filter by var from captured url
         return qs.filter(post__pk=self.kwargs['pk'])
 
+class CommentLikeListView(LoginRequiredMixin, ListView):
+    model = Like
+
+    def get_queryset(self):
+        # org qs
+        qs = super().get_queryset()
+        # filter by var from captured url
+        return qs.filter(comment__pk=self.kwargs['pk'])
 
 def aboutUs(request):
     # displays http response for about us page
@@ -247,11 +284,11 @@ class SearchListView(ListView):
         return object_list
 
 
-class LikeListView(LoginRequiredMixin, ListView):
-    model = Like
+# class LikeListView(LoginRequiredMixin, ListView):
+#     model = Like
 
-    def get_queryset(self):
-        # org qs
-        qs = super().get_queryset()
-        # filter by var from captured url
-        return qs.filter(post__pk=self.kwargs['pk'])
+#     def get_queryset(self):
+#         # org qs
+#         qs = super().get_queryset()
+#         # filter by var from captured url
+#         return qs.filter(post__pk=self.kwargs['pk'])
